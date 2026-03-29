@@ -1,0 +1,57 @@
+---
+description: Next.js conventions for AI Civic Commons
+alwaysApply: true
+---
+
+# Next.js conventions for AI Civic Commons
+
+## Stack
+- Next.js 16 with App Router
+- TypeScript
+- Tailwind CSS
+- PostgreSQL via `pg` Pool (lib/db.ts)
+- Deployed on Vercel with ISR
+
+## Data fetching
+- Use async server components for all data fetching — no useEffect fetches
+- Always include `revalidate` in page exports:
+  - Articles/feed: `revalidate = 60`
+  - Programs/orgs/frameworks: `revalidate = 3600`
+  - Static content: `revalidate = 86400`
+- Exclude sentinel rows: always add `WHERE id != 1` to queries
+- Always import pool from `@/lib/db`
+
+## Metadata
+- Every page exports a `metadata` object or `generateMetadata` function
+- Title format: "Page Name | AI Civic Commons"
+- Always include description, openGraph title and description
+
+## File structure
+- Pages: `app/[section]/page.tsx`
+- Shared components: `components/`
+- Query functions: `lib/queries/[table].ts`
+- DB connection: `lib/db.ts`
+
+## Database
+- Schema: `ai`
+- All tables prefixed: `ai.organizations`, `ai.articles` etc.
+- Connection via `vercel_readonly` role (SELECT only)
+- SSL: `{ rejectUnauthorized: false }`
+
+## Brand colors (not in Tailwind palette — use inline styles or CSS vars)
+- Slate: #1c2333
+- Amber: #BA7517
+- Amber dark (for small text): #8B5E10
+
+## Accessibility
+- See accessibility.md — apply all rules without being asked
+- Always use Headless UI for interactive components (dropdowns, mobile nav, filters)
+
+## Responsiveness  
+- See responsiveness.md — apply all rules without being asked
+- Mobile-first always
+
+## SEO
+- Use Next.js `<Image>` component always — never bare `<img>`
+- Add JSON-LD structured data to content pages
+- `aria-current="page"` on active nav links

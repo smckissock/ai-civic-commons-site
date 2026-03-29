@@ -1,0 +1,59 @@
+---
+description: Responsiveness rules
+alwaysApply: true
+---
+
+# Responsiveness rules
+
+Apply these to every component and page without being asked.
+
+## Approach
+- Mobile-first: write base styles for mobile, add `md:` and `lg:` overrides
+- Never use fixed pixel widths that would overflow on small screens
+- Test mentally at 320px (minimum), 375px (iPhone), 768px (tablet), 1280px (desktop)
+
+## Breakpoints (Tailwind defaults)
+- `sm`: 640px  — large phones, small tablets
+- `md`: 768px  — tablets
+- `lg`: 1024px — laptops
+- `xl`: 1280px — desktops
+
+## Layout patterns
+- Multi-column grids collapse to single column on mobile:
+  `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- Two-column hero sections stack vertically on mobile:
+  `grid-cols-1 md:grid-cols-2`
+- Side-by-side nav links become a hamburger menu below `md:`
+- Data tables on mobile: use horizontal scroll wrapper or card layout alternative
+
+## Typography
+- Headings scale down on mobile:
+  `text-xl md:text-2xl lg:text-3xl`
+- Line lengths should not exceed ~75 characters: use `max-w-prose` or `max-w-2xl`
+- Never use font sizes below 16px for body text on mobile (browsers zoom at <16px)
+
+## Touch targets
+- All clickable elements minimum 44x44px on mobile (WCAG 2.5.5)
+- Add padding to small links and buttons on mobile: `p-3 md:p-2`
+- Adequate spacing between touch targets — minimum 8px gap
+
+## Images
+- Always use `width` and `height` on Next.js `<Image>` to prevent layout shift
+- Use `sizes` prop to serve appropriately sized images:
+  `sizes="(max-width: 768px) 100vw, 50vw"`
+- Never use `<img>` — always use Next.js `<Image>` component
+
+## Navigation
+- Desktop: horizontal link bar
+- Mobile: hamburger toggle revealing a full-width dropdown or slide-in panel
+- Use Headless UI `Disclosure` for accessible mobile nav
+
+## Spacing
+- Use responsive padding: `px-4 md:px-6 lg:px-8`
+- Section padding: `py-8 md:py-12 lg:py-16`
+
+## What to avoid
+- `overflow: hidden` on containers that clip content on small screens
+- Absolute positioning without checking mobile behavior
+- Horizontal scrollbars on any viewport width
+- Text overlapping images on small screens

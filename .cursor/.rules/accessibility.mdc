@@ -1,0 +1,56 @@
+---
+description: Accessibility and 508 compliance rules for AI Civic Commons
+alwaysApply: true
+---
+
+# Accessibility & 508 compliance rules
+
+Apply these to every component and page without being asked.
+
+## Semantic HTML
+- One `<h1>` per page — the page title only
+- Use `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<header>`, `<footer>` appropriately
+- Never use a `<div>` or `<span>` for something that should be a `<button>`, `<a>`, or form element
+- All interactive elements must be reachable and operable via keyboard
+
+## Images and icons
+- Every `<img>` needs a descriptive `alt` attribute
+- Decorative images use `alt=""`
+- Inline SVG icons used as buttons need `aria-label` on the parent button
+- SVG icons that are purely decorative need `aria-hidden="true"`
+
+## Forms and inputs
+- Every `<input>`, `<select>`, `<textarea>` needs an associated `<label>`
+- Use `htmlFor` / `id` pairing — never rely on placeholder text as a label
+- Error messages must be associated with their input via `aria-describedby`
+
+## Color and contrast
+- Text on white background: minimum 4.5:1 contrast ratio (WCAG AA)
+- Large text (18px+ or 14px+ bold): minimum 3:1 contrast ratio
+- Never use color alone to convey meaning — always pair with text or icon
+- Brand colors in use:
+  - Slate #1c2333 on white: passes AAA
+  - Amber #BA7517 on white: passes AA for large text only — do NOT use for body text
+  - Amber text on white: use #8B5E10 (darker) for small text if needed
+
+## Focus management
+- Never remove focus outlines (`outline: none`) without providing a visible alternative
+- Use Tailwind's `focus:ring-2 focus:ring-offset-2` pattern
+- Modal/dialog focus must be trapped inside while open
+
+## ARIA
+- Don't add ARIA roles to semantic elements that already have them (`<button>` doesn't need `role="button"`)
+- Use `aria-current="page"` on the active nav link
+- Use `aria-expanded` on disclosure/accordion triggers
+- Use `aria-live` regions for dynamic content updates (filter results, notifications)
+
+## Navigation
+- Skip-to-main-content link as the very first focusable element on every page
+- Nav links must indicate current page via `aria-current="page"`
+- Mobile nav toggle must have descriptive `aria-label` ("Open menu" / "Close menu")
+- Mobile nav must be keyboard navigable and closeable with Escape key
+
+## Links
+- Never use "click here" or "read more" as link text — link text must describe the destination
+- External links should indicate they open in a new tab if `target="_blank"` is used
+- `target="_blank"` always paired with `rel="noopener noreferrer"`
