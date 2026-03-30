@@ -20,7 +20,7 @@ export default function NavBar() {
     <Disclosure as="nav" className="border-b border-black/[0.12] bg-white">
       {({ open }) => (
         <>
-          <div className="mx-auto flex max-w-[960px] items-center gap-0 px-4 md:px-6 lg:px-8 py-3">
+          <div className="mx-auto flex max-w-[960px] items-center gap-6 px-4 md:px-6 lg:px-8 py-3">
             {/* Logo */}
             <Link
               href="/"

@@ -36,12 +36,14 @@ function typeStyle(t: string) {
 
 interface Props {
   frameworks: Framework[]
+  initialOrg?: string
 }
 
-export default function FrameworkGrid({ frameworks }: Props) {
+export default function FrameworkGrid({ frameworks, initialOrg }: Props) {
   const [query, setQuery] = useState('')
   const [activeType, setActiveType] = useState<string | null>(null)
   const [activeBinding, setActiveBinding] = useState<string | null>(null)
+  const [activeOrg, setActiveOrg] = useState<string | null>(initialOrg ?? null)
 
   const types = useMemo(
     () => Array.from(new Set(frameworks.map((f) => f.framework_type).filter(Boolean))).sort(),
@@ -56,6 +58,7 @@ export default function FrameworkGrid({ frameworks }: Props) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return frameworks.filter((f) => {
+      if (activeOrg !== null && f.issuing_org !== activeOrg) return false
       if (activeType !== null && f.framework_type !== activeType) return false
       if (activeBinding !== null && f.binding_type !== activeBinding) return false
       if (!q) return true
@@ -67,7 +70,7 @@ export default function FrameworkGrid({ frameworks }: Props) {
         f.scope.toLowerCase().includes(q)
       )
     })
-  }, [frameworks, query, activeType, activeBinding])
+  }, [frameworks, query, activeType, activeBinding, activeOrg])
 
   return (
     <div>
@@ -167,6 +170,25 @@ export default function FrameworkGrid({ frameworks }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Org filter banner */}
+      {activeOrg && (
+        <div
+          className="mb-4 flex items-center justify-between rounded-lg px-3 py-2 text-[12px]"
+          style={{ background: '#fff8e1', border: `0.5px solid rgba(186,117,23,0.3)` }}
+        >
+          <span style={{ color: '#8a5a00' }}>
+            Showing frameworks from <span className="font-semibold">{activeOrg}</span>
+          </span>
+          <button
+            onClick={() => setActiveOrg(null)}
+            className="ml-3 shrink-0 rounded px-2 py-0.5 text-[11px] font-medium transition-colors hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#1c2333]"
+            style={{ color: '#8a5a00' }}
+          >
+            Clear ×
+          </button>
+        </div>
+      )}
 
       {/* Result count */}
       <p className="mb-4 text-[11px]" style={{ color: MUTED }}>

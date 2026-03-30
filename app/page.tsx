@@ -78,59 +78,59 @@ function IconTag() {
   )
 }
 
-const pillars = [
-  {
-    Icon: IconBuilding,
-    title: 'Organization registry',
-    desc: 'Nonprofits, libraries, think tanks, and intergovernmental bodies working on AI education and the public interest.',
-    link: '52 organizations →',
-    href: '/organizations',
-    iconBg: `rgba(28, 35, 51, 0.06)`,
-  },
-  {
-    Icon: IconBook,
-    title: 'Program library',
-    desc: 'Curated AI education programs for professionals, faith communities, and youth — from Helsinki to Harvard.',
-    link: '53 programs →',
-    href: '/programs',
-    iconBg: `rgba(186, 117, 23, 0.08)`,
-  },
-  {
-    Icon: IconShield,
-    title: 'Policy frameworks',
-    desc: 'International, national, and industry AI policy instruments — from OECD principles to the EU AI Act.',
-    link: '41 frameworks →',
-    href: '/frameworks',
-    iconBg: `rgba(28, 35, 51, 0.06)`,
-  },
-  {
-    Icon: IconDocument,
-    title: 'Article repository',
-    desc: 'Curated articles, policy developments, and research on AI ethics, governance, and public education.',
-    link: 'Updated daily →',
-    href: '/articles',
-    iconBg: `rgba(186, 117, 23, 0.08)`,
-  },
-  {
-    Icon: IconGlobe,
-    title: 'International development',
-    desc: 'AI for health, agriculture, education, and governance in the Global South — funded projects with outcomes.',
-    link: '15 projects →',
-    href: '/projects',
-    iconBg: `rgba(28, 35, 51, 0.06)`,
-  },
-  {
-    Icon: IconTag,
-    title: 'Tags & topics',
-    desc: 'Filter across all content by ethics, bias, equity, workforce guidance, deepfakes, and more.',
-    link: 'Browse tags →',
-    href: '/tags',
-    iconBg: `rgba(186, 117, 23, 0.08)`,
-  },
-]
-
 export default async function Home() {
   const [stats, articles] = await Promise.all([getStats(), getArticles()])
+
+  const pillars = [
+    {
+      Icon: IconBuilding,
+      title: 'Organization registry',
+      desc: 'Nonprofits, libraries, think tanks, and intergovernmental bodies working on AI education and the public interest.',
+      link: `${stats.orgs} organizations →`,
+      href: '/organizations',
+      iconBg: `rgba(28, 35, 51, 0.06)`,
+    },
+    {
+      Icon: IconBook,
+      title: 'Program library',
+      desc: 'Curated AI education programs for professionals, faith communities, and youth — from Helsinki to Harvard.',
+      link: `${stats.programs}+ programs →`,
+      href: '/programs',
+      iconBg: `rgba(186, 117, 23, 0.08)`,
+    },
+    {
+      Icon: IconShield,
+      title: 'Policy frameworks',
+      desc: 'International, national, and industry AI policy instruments — from OECD principles to the EU AI Act.',
+      link: `${stats.frameworks} frameworks →`,
+      href: '/frameworks',
+      iconBg: `rgba(28, 35, 51, 0.06)`,
+    },
+    {
+      Icon: IconDocument,
+      title: 'Article repository',
+      desc: 'Curated articles, policy developments, and research on AI ethics, governance, and public education.',
+      link: 'Updated daily →',
+      href: '/articles',
+      iconBg: `rgba(186, 117, 23, 0.08)`,
+    },
+    {
+      Icon: IconGlobe,
+      title: 'International development',
+      desc: 'AI for health, agriculture, education, and governance in the Global South — funded projects with outcomes.',
+      link: `${stats.projects} projects →`,
+      href: '/projects',
+      iconBg: `rgba(28, 35, 51, 0.06)`,
+    },
+    {
+      Icon: IconTag,
+      title: 'Tags & topics',
+      desc: 'Filter across all content by ethics, bias, equity, workforce guidance, deepfakes, and more.',
+      link: 'Browse tags →',
+      href: '/tags',
+      iconBg: `rgba(186, 117, 23, 0.08)`,
+    },
+  ]
 
   return (
     <>
@@ -168,37 +168,20 @@ export default async function Home() {
                   find each other, share what works, and demonstrate together what they cannot
                   show alone.
                 </p>
-
-                {/* Buttons */}
-                <div className="flex flex-wrap gap-2.5">
-                  <Link
-                    href="/explore"
-                    className="inline-block rounded-lg px-[18px] py-3 text-[13px] font-medium text-white no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1c2333]"
-                    style={{ background: SL }}
-                  >
-                    Explore the commons
-                  </Link>
-                  <Link
-                    href="/organizations"
-                    className="inline-block px-1 py-3 text-[13px] font-medium no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b7280] rounded"
-                    style={{ color: MUTED }}
-                  >
-                    For organizations →
-                  </Link>
-                </div>
               </div>
 
               {/* Right — stats */}
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { value: stats.programs, plus: true, label: 'Programs in the library' },
-                  { value: stats.frameworks, plus: false, label: 'Policy frameworks' },
-                  { value: stats.orgs, plus: false, label: 'Organizations registered' },
-                  { value: stats.projects, plus: false, label: 'International dev projects' },
-                ].map(({ value, plus, label }) => (
-                  <div
+                  { value: stats.programs, label: 'Programs in the library', href: '/programs' },
+                  { value: stats.frameworks, label: 'Policy frameworks', href: '/frameworks' },
+                  { value: stats.orgs, label: 'Organizations registered', href: '/organizations' },
+                  { value: stats.projects, label: 'International dev projects', href: '/projects' },
+                ].map(({ value, label, href }) => (
+                  <Link
                     key={label}
-                    className="rounded-lg px-4 py-4"
+                    href={href}
+                    className="stat-card rounded-lg px-4 py-4 no-underline block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1c2333]"
                     style={{ background: SEC_BG }}
                   >
                     <div
@@ -206,10 +189,9 @@ export default async function Home() {
                       style={{ color: SL }}
                     >
                       {value}
-                      {plus && <span style={{ color: AM }}>+</span>}
                     </div>
-                    <div className="text-[11px] leading-snug" style={{ color: MUTED }}>{label}</div>
-                  </div>
+                    <div className="text-[13px] font-semibold leading-snug" style={{ color: MUTED }}>{label}</div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -376,6 +358,13 @@ export default async function Home() {
         }
         .article-row:hover span[style*="color: rgb(28"] {
           color: #BA7517;
+        }
+        .stat-card {
+          transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .stat-card:hover {
+          background-color: #eeeeed !important;
+          box-shadow: 0 2px 8px rgba(28, 35, 51, 0.08);
         }
       `}</style>
     </>

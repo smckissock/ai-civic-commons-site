@@ -58,12 +58,14 @@ function RatingDot({ value, label }: { value: string; label: string }) {
 
 interface Props {
   programs: Program[]
+  initialOrg?: string
 }
 
-export default function ProgramGrid({ programs }: Props) {
+export default function ProgramGrid({ programs, initialOrg }: Props) {
   const [query, setQuery] = useState('')
   const [activeLevel, setActiveLevel] = useState<string | null>(null)
   const [activeAudience, setActiveAudience] = useState<string | null>(null)
+  const [activeOrg, setActiveOrg] = useState<string | null>(initialOrg ?? null)
 
   const levels = useMemo(
     () =>
@@ -79,6 +81,7 @@ export default function ProgramGrid({ programs }: Props) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return programs.filter((p) => {
+      if (activeOrg !== null && p.provider !== activeOrg) return false
       if (activeLevel !== null && p.level !== activeLevel) return false
       if (activeAudience !== null && p.audience !== activeAudience) return false
       if (!q) return true
@@ -88,7 +91,7 @@ export default function ProgramGrid({ programs }: Props) {
         p.provider.toLowerCase().includes(q)
       )
     })
-  }, [programs, query, activeLevel, activeAudience])
+  }, [programs, query, activeLevel, activeAudience, activeOrg])
 
   return (
     <div>
@@ -180,6 +183,25 @@ export default function ProgramGrid({ programs }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Org filter banner */}
+      {activeOrg && (
+        <div
+          className="mb-4 flex items-center justify-between rounded-lg px-3 py-2 text-[12px]"
+          style={{ background: '#fff8e1', border: `0.5px solid rgba(186,117,23,0.3)` }}
+        >
+          <span style={{ color: '#8a5a00' }}>
+            Showing programs from <span className="font-semibold">{activeOrg}</span>
+          </span>
+          <button
+            onClick={() => setActiveOrg(null)}
+            className="ml-3 shrink-0 rounded px-2 py-0.5 text-[11px] font-medium transition-colors hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#1c2333]"
+            style={{ color: '#8a5a00' }}
+          >
+            Clear ×
+          </button>
+        </div>
+      )}
 
       {/* Result count */}
       <p className="mb-4 text-[11px]" style={{ color: MUTED }}>

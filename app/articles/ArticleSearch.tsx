@@ -20,11 +20,13 @@ function formatDate(d: Date | string): string {
 
 interface Props {
   articles: Article[]
+  initialOrg?: string
 }
 
-export default function ArticleSearch({ articles }: Props) {
+export default function ArticleSearch({ articles, initialOrg }: Props) {
   const [query, setQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+  const [activeOrg, setActiveOrg] = useState<string | null>(initialOrg ?? null)
 
   const categories = useMemo(
     () => Array.from(new Set(articles.map((a) => a.category))).sort(),
@@ -34,6 +36,7 @@ export default function ArticleSearch({ articles }: Props) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return articles.filter((a) => {
+      if (activeOrg !== null && a.source_org !== activeOrg) return false
       const matchesCategory = activeCategory === null || a.category === activeCategory
       if (!matchesCategory) return false
       if (!q) return true
@@ -43,7 +46,7 @@ export default function ArticleSearch({ articles }: Props) {
         (a.summary ?? '').toLowerCase().includes(q)
       )
     })
-  }, [articles, query, activeCategory])
+  }, [articles, query, activeCategory, activeOrg])
 
   return (
     <div>
@@ -109,6 +112,25 @@ export default function ArticleSearch({ articles }: Props) {
           ))}
         </div>
       </div>
+
+      {/* Org filter banner */}
+      {activeOrg && (
+        <div
+          className="mb-3 flex items-center justify-between rounded-lg px-3 py-2 text-[12px]"
+          style={{ background: '#fff8e1', border: `0.5px solid rgba(186,117,23,0.3)` }}
+        >
+          <span style={{ color: '#8a5a00' }}>
+            Showing articles from <span className="font-semibold">{activeOrg}</span>
+          </span>
+          <button
+            onClick={() => setActiveOrg(null)}
+            className="ml-3 shrink-0 rounded px-2 py-0.5 text-[11px] font-medium transition-colors hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#1c2333]"
+            style={{ color: '#8a5a00' }}
+          >
+            Clear ×
+          </button>
+        </div>
+      )}
 
       {/* Result count */}
       <p className="mb-3 text-[11px]" style={{ color: MUTED }}>

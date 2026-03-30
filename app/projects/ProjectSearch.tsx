@@ -27,11 +27,13 @@ function formatBudget(raw: string | number): string {
 
 interface Props {
   projects: Project[]
+  initialOrg?: string
 }
 
-export default function ProjectSearch({ projects }: Props) {
+export default function ProjectSearch({ projects, initialOrg }: Props) {
   const [query, setQuery] = useState('')
   const [activeSector, setActiveSector] = useState<string | null>(null)
+  const [activeOrg, setActiveOrg] = useState<string | null>(initialOrg ?? null)
 
   const sectors = useMemo(
     () => Array.from(new Set(projects.map((p) => p.sector))).sort(),
@@ -41,6 +43,13 @@ export default function ProjectSearch({ projects }: Props) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return projects.filter((p) => {
+      if (activeOrg !== null) {
+        const orgLower = activeOrg.toLowerCase()
+        if (
+          !p.donors.toLowerCase().includes(orgLower) &&
+          !p.implementing_orgs.toLowerCase().includes(orgLower)
+        ) return false
+      }
       if (activeSector !== null && p.sector !== activeSector) return false
       if (!q) return true
       return (
@@ -51,7 +60,7 @@ export default function ProjectSearch({ projects }: Props) {
         p.countries.toLowerCase().includes(q)
       )
     })
-  }, [projects, query, activeSector])
+  }, [projects, query, activeSector, activeOrg])
 
   return (
     <div>
@@ -117,6 +126,25 @@ export default function ProjectSearch({ projects }: Props) {
           ))}
         </div>
       </div>
+
+      {/* Org filter banner */}
+      {activeOrg && (
+        <div
+          className="mb-3 flex items-center justify-between rounded-lg px-3 py-2 text-[12px]"
+          style={{ background: '#fff8e1', border: `0.5px solid rgba(186,117,23,0.3)` }}
+        >
+          <span style={{ color: '#8a5a00' }}>
+            Showing projects involving <span className="font-semibold">{activeOrg}</span>
+          </span>
+          <button
+            onClick={() => setActiveOrg(null)}
+            className="ml-3 shrink-0 rounded px-2 py-0.5 text-[11px] font-medium transition-colors hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#1c2333]"
+            style={{ color: '#8a5a00' }}
+          >
+            Clear ×
+          </button>
+        </div>
+      )}
 
       {/* Result count */}
       <p className="mb-3 text-[11px]" style={{ color: MUTED }}>

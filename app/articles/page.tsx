@@ -16,8 +16,15 @@ const SL = '#1c2333'
 const MUTED = '#6b7280'
 const BORDER = 'rgba(28, 35, 51, 0.12)'
 
-export default async function ArticlesPage() {
-  const articles = await getAllArticles()
+export default async function ArticlesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ org?: string }>
+}) {
+  const [articles, { org }] = await Promise.all([
+    getAllArticles(),
+    searchParams,
+  ])
 
   return (
     <>
@@ -44,7 +51,7 @@ export default async function ArticlesPage() {
           </p>
         </div>
 
-        <ArticleSearch articles={articles} />
+        <ArticleSearch articles={articles} initialOrg={org} />
       </main>
 
       <Footer />

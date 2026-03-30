@@ -16,8 +16,15 @@ const SL = '#1c2333'
 const MUTED = '#6b7280'
 const BORDER = 'rgba(28, 35, 51, 0.12)'
 
-export default async function ProjectsPage() {
-  const projects = await getAllProjects()
+export default async function ProjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ org?: string }>
+}) {
+  const [projects, { org }] = await Promise.all([
+    getAllProjects(),
+    searchParams,
+  ])
 
   return (
     <>
@@ -44,7 +51,7 @@ export default async function ProjectsPage() {
           </p>
         </div>
 
-        <ProjectSearch projects={projects} />
+        <ProjectSearch projects={projects} initialOrg={org} />
       </main>
 
       <Footer />

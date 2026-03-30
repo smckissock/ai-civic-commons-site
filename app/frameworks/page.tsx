@@ -16,8 +16,15 @@ const SL = '#1c2333'
 const MUTED = '#6b7280'
 const BORDER = 'rgba(28, 35, 51, 0.12)'
 
-export default async function FrameworksPage() {
-  const frameworks = await getAllFrameworks()
+export default async function FrameworksPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ org?: string }>
+}) {
+  const [frameworks, { org }] = await Promise.all([
+    getAllFrameworks(),
+    searchParams,
+  ])
 
   return (
     <>
@@ -43,7 +50,7 @@ export default async function FrameworksPage() {
           </p>
         </div>
 
-        <FrameworkGrid frameworks={frameworks} />
+        <FrameworkGrid frameworks={frameworks} initialOrg={org} />
       </main>
 
       <Footer />

@@ -1,13 +1,16 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import type { Org } from '@/lib/queries/organizations'
+import Link from 'next/link'
+import type { Org, OrgProgram, OrgFramework, OrgArticle, OrgProject } from '@/lib/queries/organizations'
 
 const SL = '#1c2333'
 const AM = '#BA7517'
 const MUTED = '#6b7280'
 const SEC_BG = '#f7f7f5'
 const BORDER = 'rgba(28, 35, 51, 0.12)'
+
+const MAX_INLINE = 3
 
 const TYPE_COLORS: Record<string, { bg: string; color: string }> = {
   'Academic Institution':         { bg: '#e8f0fe', color: '#1a56b0' },
@@ -24,18 +27,195 @@ function typeStyle(orgType: string) {
   return TYPE_COLORS[orgType] ?? { bg: SEC_BG, color: MUTED }
 }
 
-function ActivityBadge({ count, label }: { count: number; label: string }) {
-  if (!count) return null
+/* ---------- inline content sections ---------- */
+
+function SectionHeader({
+  label,
+  count,
+  viewAllHref,
+}: {
+  label: string
+  count: number
+  viewAllHref: string
+}) {
   return (
-    <span
-      className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium"
-      style={{ background: SEC_BG, border: `0.5px solid ${BORDER}`, color: MUTED }}
-    >
-      <span style={{ color: AM }} className="font-semibold">{count}</span>
-      {label}
-    </span>
+    <div className="flex items-baseline justify-between gap-2">
+      <span
+        className="text-[10px] font-semibold uppercase tracking-[0.07em]"
+        style={{ color: MUTED }}
+      >
+        {label}
+      </span>
+      {count > MAX_INLINE && (
+        <Link
+          href={viewAllHref}
+          className="shrink-0 text-[10px] no-underline hover:underline focus:outline-none focus:ring-1 focus:ring-[#1c2333] rounded"
+          style={{ color: AM }}
+        >
+          View all {count} →
+        </Link>
+      )}
+    </div>
   )
 }
+
+function ProgramItems({ items, orgName }: { items: OrgProgram[]; orgName: string }) {
+  if (!items.length) return null
+  const shown = items.slice(0, MAX_INLINE)
+  const href = `/programs?org=${encodeURIComponent(orgName)}`
+  return (
+    <div className="flex flex-col gap-2">
+      <SectionHeader label="Programs" count={items.length} viewAllHref={href} />
+      {shown.map((p) => (
+        <div key={p.name} className="flex flex-col gap-0.5">
+          {p.url ? (
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-start gap-0.5 no-underline focus:outline-none focus:ring-1 focus:ring-[#1c2333] rounded"
+            >
+              <span
+                className="text-[12px] font-medium leading-snug group-hover:underline"
+                style={{ color: SL }}
+              >
+                {p.name}
+              </span>
+              <span className="shrink-0 text-[9px] opacity-40 mt-px" style={{ color: AM }} aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            <span className="text-[12px] font-medium leading-snug" style={{ color: SL }}>{p.name}</span>
+          )}
+          <span className="text-[10px]" style={{ color: MUTED }}>
+            {p.level}{p.audience ? ` · ${p.audience}` : ''}
+          </span>
+          {p.description && (
+            <p className="m-0 line-clamp-2 text-[11px] leading-relaxed" style={{ color: MUTED }}>
+              {p.description}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function FrameworkItems({ items, orgName }: { items: OrgFramework[]; orgName: string }) {
+  if (!items.length) return null
+  const shown = items.slice(0, MAX_INLINE)
+  const href = `/frameworks?org=${encodeURIComponent(orgName)}`
+  return (
+    <div className="flex flex-col gap-2">
+      <SectionHeader label="Policy Frameworks" count={items.length} viewAllHref={href} />
+      {shown.map((f) => (
+        <div key={f.name} className="flex flex-col gap-0.5">
+          {f.url ? (
+            <a
+              href={f.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-start gap-0.5 no-underline focus:outline-none focus:ring-1 focus:ring-[#1c2333] rounded"
+            >
+              <span
+                className="text-[12px] font-medium leading-snug group-hover:underline"
+                style={{ color: SL }}
+              >
+                {f.name}
+              </span>
+              <span className="shrink-0 text-[9px] opacity-40 mt-px" style={{ color: AM }} aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            <span className="text-[12px] font-medium leading-snug" style={{ color: SL }}>{f.name}</span>
+          )}
+          <span className="text-[10px]" style={{ color: MUTED }}>
+            {f.framework_type}{f.year_adopted ? ` · ${f.year_adopted}` : ''}
+          </span>
+          {f.description && (
+            <p className="m-0 line-clamp-2 text-[11px] leading-relaxed" style={{ color: MUTED }}>
+              {f.description}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ArticleItems({ items, orgName }: { items: OrgArticle[]; orgName: string }) {
+  if (!items.length) return null
+  const shown = items.slice(0, MAX_INLINE)
+  const href = `/articles?org=${encodeURIComponent(orgName)}`
+  return (
+    <div className="flex flex-col gap-2">
+      <SectionHeader label="Articles" count={items.length} viewAllHref={href} />
+      {shown.map((a) => (
+        <div key={a.url} className="flex flex-col gap-0.5">
+          <a
+            href={a.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-start gap-0.5 no-underline focus:outline-none focus:ring-1 focus:ring-[#1c2333] rounded"
+          >
+            <span
+              className="text-[12px] font-medium leading-snug group-hover:underline"
+              style={{ color: SL }}
+            >
+              {a.name}
+            </span>
+            <span className="shrink-0 text-[9px] opacity-40 mt-px" style={{ color: AM }} aria-hidden="true">↗</span>
+          </a>
+          <span className="text-[10px]" style={{ color: MUTED }}>{a.category}</span>
+          {a.summary && (
+            <p className="m-0 line-clamp-2 text-[11px] leading-relaxed" style={{ color: MUTED }}>
+              {a.summary}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ProjectItems({ items, orgName }: { items: OrgProject[]; orgName: string }) {
+  if (!items.length) return null
+  const shown = items.slice(0, MAX_INLINE)
+  const href = `/projects?org=${encodeURIComponent(orgName)}`
+  return (
+    <div className="flex flex-col gap-2">
+      <SectionHeader label="Development Projects" count={items.length} viewAllHref={href} />
+      {shown.map((p) => (
+        <div key={p.name} className="flex flex-col gap-0.5">
+          {p.url ? (
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-start gap-0.5 no-underline focus:outline-none focus:ring-1 focus:ring-[#1c2333] rounded"
+            >
+              <span
+                className="text-[12px] font-medium leading-snug group-hover:underline"
+                style={{ color: SL }}
+              >
+                {p.name}
+              </span>
+              <span className="shrink-0 text-[9px] opacity-40 mt-px" style={{ color: AM }} aria-hidden="true">↗</span>
+            </a>
+          ) : (
+            <span className="text-[12px] font-medium leading-snug" style={{ color: SL }}>{p.name}</span>
+          )}
+          <span className="text-[10px]" style={{ color: MUTED }}>{p.sector}</span>
+          {p.description && (
+            <p className="m-0 line-clamp-2 text-[11px] leading-relaxed" style={{ color: MUTED }}>
+              {p.description}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* ---------- main grid ---------- */
 
 interface Props {
   orgs: Org[]
@@ -148,11 +328,11 @@ export default function OrgGrid({ orgs }: Props) {
           {filtered.map((org) => {
             const ts = typeStyle(org.org_type)
             const hasLink = Boolean(org.url)
-            const hasActivity =
-              org.article_count > 0 ||
-              org.framework_count > 0 ||
-              org.program_count > 0 ||
-              org.project_count > 0
+            const hasContent =
+              org.programs.length > 0 ||
+              org.frameworks.length > 0 ||
+              org.articles.length > 0 ||
+              org.projects.length > 0
 
             return (
               <div
@@ -265,16 +445,16 @@ export default function OrgGrid({ orgs }: Props) {
                   </div>
                 )}
 
-                {/* Activity badges */}
-                {hasActivity && (
+                {/* Related content */}
+                {hasContent && (
                   <div
-                    className="flex flex-wrap gap-1.5 border-t pt-3"
+                    className="flex flex-col gap-4 border-t pt-4"
                     style={{ borderColor: BORDER }}
                   >
-                    <ActivityBadge count={org.article_count}   label="article" />
-                    <ActivityBadge count={org.framework_count} label="framework" />
-                    <ActivityBadge count={org.program_count}   label="program" />
-                    <ActivityBadge count={org.project_count}   label="project" />
+                    <ProgramItems   items={org.programs}   orgName={org.name} />
+                    <FrameworkItems items={org.frameworks} orgName={org.name} />
+                    <ArticleItems   items={org.articles}   orgName={org.name} />
+                    <ProjectItems   items={org.projects}   orgName={org.name} />
                   </div>
                 )}
               </div>

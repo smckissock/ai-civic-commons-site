@@ -16,8 +16,15 @@ const SL = '#1c2333'
 const MUTED = '#6b7280'
 const BORDER = 'rgba(28, 35, 51, 0.12)'
 
-export default async function ProgramsPage() {
-  const programs = await getAllPrograms()
+export default async function ProgramsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ org?: string }>
+}) {
+  const [programs, { org }] = await Promise.all([
+    getAllPrograms(),
+    searchParams,
+  ])
 
   return (
     <>
@@ -43,7 +50,7 @@ export default async function ProgramsPage() {
           </p>
         </div>
 
-        <ProgramGrid programs={programs} />
+        <ProgramGrid programs={programs} initialOrg={org} />
       </main>
 
       <Footer />
