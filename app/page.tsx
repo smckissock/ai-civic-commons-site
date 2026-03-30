@@ -94,7 +94,7 @@ export default async function Home() {
       Icon: IconBook,
       title: 'Program library',
       desc: 'Curated AI education programs for professionals, faith communities, and youth — from Helsinki to Harvard.',
-      link: `${stats.programs}+ programs →`,
+      link: `${stats.programs} programs →`,
       href: '/programs',
       iconBg: `rgba(186, 117, 23, 0.08)`,
     },
