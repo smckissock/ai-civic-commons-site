@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
@@ -23,13 +24,17 @@ export default function NavBar() {
             {/* Logo */}
             <Link
               href="/"
+              aria-label="AI Civic Commons home"
               className="flex flex-shrink-0 items-center gap-3 no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1c2333] rounded"
               aria-current={pathname === '/' ? 'page' : undefined}
             >
-              <svg width="52" height="52" viewBox="0 0 44 44" fill="none" aria-label="AI Civic Commons home">
-                <circle cx="22" cy="22" r="19" stroke="#1c2333" strokeWidth="3.5" fill="none" />
-                <text x="22" y="29" textAnchor="middle" fontSize="19" fontWeight="600" fill="#1c2333" letterSpacing="2">AI</text>
-              </svg>
+              <Image
+                src="/logo-mark.svg"
+                alt=""
+                width={52}
+                height={52}
+                aria-hidden={true}
+              />
               <div className="max-w-[220px]">
                 <div className="text-[25px] font-medium leading-[1.3]" style={{ color: '#1c2333', marginTop: '2px' }}>AI Civic Commons</div>
                 <div className="text-[13px] leading-[1.2]" style={{ color: '#6b7280', marginTop: '-2px' }}>
@@ -39,17 +44,17 @@ export default function NavBar() {
             </Link>
 
             {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-6 mx-auto">
+            <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
               {navLinks.map(({ label, href }) => (
                 <Link
                   key={href}
                   href={href}
                   aria-current={pathname === href ? 'page' : undefined}
-                  className="text-center text-[12px] max-w-[72px] leading-[1.35] no-underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1c2333] rounded px-1 py-2"
-                  style={{
-                    color: pathname === href ? '#1c2333' : '#6b7280',
-                    fontWeight: pathname === href ? 500 : 400,
-                  }}
+                  className={`text-center text-[12px] max-w-[72px] leading-[1.35] no-underline outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#1c2333] focus-visible:rounded px-1 py-2 border-b-2 transition-colors duration-150 hover:text-[#1c2333] ${
+                    pathname === href
+                      ? 'text-[#1c2333] font-bold border-[#BA7517]'
+                      : 'text-[#6b7280] font-normal border-transparent hover:border-[#BA7517]'
+                  }`}
                 >
                   {label}
                 </Link>
@@ -59,7 +64,7 @@ export default function NavBar() {
             {/* CTA — desktop */}
             <Link
               href="/join"
-              className="ml-auto hidden md:inline-block flex-shrink-0 rounded-lg bg-[#BA7517] px-4 py-3 text-[12px] font-medium text-white no-underline whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#BA7517]"
+              className="ml-8 hidden md:inline-block flex-shrink-0 rounded-md bg-[#BA7517] px-3 py-1.5 text-[11px] font-medium text-white no-underline text-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#BA7517]"
             >
               Join the Community
             </Link>
@@ -90,11 +95,11 @@ export default function NavBar() {
                   as={Link}
                   href={href}
                   aria-current={pathname === href ? 'page' : undefined}
-                  className="block py-3 text-[14px] no-underline focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#1c2333] rounded"
-                  style={{
-                    color: pathname === href ? '#1c2333' : '#6b7280',
-                    fontWeight: pathname === href ? 500 : 400,
-                  }}
+                  className={`block py-3 text-[14px] no-underline outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#1c2333] focus-visible:rounded transition-colors duration-150 hover:text-[#1c2333] ${
+                    pathname === href
+                      ? 'text-[#1c2333] font-bold'
+                      : 'text-[#6b7280] font-normal'
+                  }`}
                 >
                   {label}
                 </DisclosureButton>
