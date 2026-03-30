@@ -141,7 +141,7 @@ export default async function Home() {
 
           {/* Hero */}
           <section
-            className="py-8 md:py-12 lg:py-16"
+            className="py-5"
             style={{ borderBottom: `0.5px solid ${BORDER}` }}
           >
             <div className="grid grid-cols-1 gap-7 md:grid-cols-2 md:items-start">
@@ -242,7 +242,7 @@ export default async function Home() {
 
           {/* Browse the commons */}
           <section
-            className="py-8 md:py-12"
+            className="py-5"
             style={{ borderBottom: `0.5px solid ${BORDER}` }}
           >
             <h2
@@ -300,7 +300,7 @@ export default async function Home() {
           </section>
 
           {/* Article repository */}
-          <section className="py-8 pb-12 md:py-12 md:pb-16">
+          <section className="py-5">
             {/* Section header */}
             <div className="mb-4 flex items-baseline justify-between">
               <h2
